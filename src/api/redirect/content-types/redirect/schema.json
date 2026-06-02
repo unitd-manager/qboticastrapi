@@ -1,0 +1,5 @@
+{
+  "oldUrl": "string",
+  "newUrl": "string",
+  "statusCode": "integer"
+}

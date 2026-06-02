@@ -1,0 +1,9 @@
+{
+  "title": "string",
+  "slug": "uid",
+  "shortDescription": "text",
+  "content": "richtext",
+  "banner": "media",
+  "icon": "media",
+  "seo": "component"
+}

@@ -1,0 +1,11 @@
+{
+  "title": "string",
+  "slug": "uid",
+  "client": "string",
+  "industry": "string",
+  "challenge": "richtext",
+  "solution": "richtext",
+  "results": "richtext",
+  "featuredImage": "media",
+  "seo": "component"
+}

@@ -1,0 +1,7 @@
+{
+  "name": "string",
+  "email": "email",
+  "designation": "string",
+  "bio": "richtext",
+  "avatar": "media"
+}

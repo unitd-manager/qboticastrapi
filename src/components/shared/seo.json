@@ -1,0 +1,8 @@
+{
+  "metaTitle": "string",
+  "metaDescription": "text",
+  "canonicalUrl": "string",
+  "keywords": "string",
+  "ogImage": "media",
+  "noIndex": "boolean"
+}

@@ -1,0 +1,25 @@
+{
+  "kind": "collectionType",
+  "collectionName": "pages",
+  "info": {
+    "displayName": "Page",
+    "singularName": "page",
+    "pluralName": "pages"
+  },
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title"
+    },
+    "pageBuilder": {
+      "type": "dynamiczone",
+      "components": [
+        "sections.hero",
+        "sections.cta"
+      ]
+    }
+  }
+}
