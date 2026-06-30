@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_acf_sections_home_key_highlights",
+  "info": {
+    "displayName": "Home Key Highlights"
+  },
+  "attributes": {
+    "main_title": {
+      "type": "text"
+    },
+    "description": {
+      "type": "richtext"
+    },
+    "highlights_list": {
+      "type": "component",
+      "repeatable": true,
+      "component": "acf-shared.home-key-highlights-highlights-list"
+    },
+    "class_name": {
+      "type": "string"
+    },
+    "acf_id": {
+      "type": "string"
+    }
+  }
+}

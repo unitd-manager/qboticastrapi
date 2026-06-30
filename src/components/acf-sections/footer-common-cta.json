@@ -1,0 +1,29 @@
+{
+  "collectionName": "components_acf_sections_footer_common_cta",
+  "info": {
+    "displayName": "Footer Common CTA"
+  },
+  "attributes": {
+    "display_options": {
+      "type": "json"
+    },
+    "main_title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "richtext"
+    },
+    "cta_button": {
+      "type": "component",
+      "component": "shared.menu-item",
+      "repeatable": false
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    }
+  }
+}

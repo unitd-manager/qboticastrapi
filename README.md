@@ -32,6 +32,21 @@ npm run build
 yarn build
 ```
 
+### `migrate:wordpress`
+
+Runs the `qbo_*` WordPress to Strapi migration utility.
+
+1. Copy `.env.example` to `.env`
+2. Fill in `STRAPI_API_TOKEN` and the `WP_DB_*` values
+3. Start with `DRY_RUN=true`
+4. Run:
+
+```bash
+npm run migrate:wordpress
+```
+
+The script imports WordPress pages, posts, categories, tags, authors, featured images, and ACF-style post meta into the current Strapi content types. It reads the local Strapi schemas first and only sends fields that actually exist in this project.
+
 ## ⚙️ Deployment
 
 Strapi gives you many possible deployment options for your project including [Strapi Cloud](https://cloud.strapi.io). Browse the [deployment section of the documentation](https://docs.strapi.io/dev-docs/deployment) to find the best solution for your use case.

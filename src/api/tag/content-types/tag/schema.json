@@ -1,4 +1,18 @@
 {
-  "name": "string",
-  "slug": "uid"
+  "kind": "collectionType",
+  "collectionName": "tags",
+  "info": {
+    "displayName": "Tag",
+    "singularName": "tag",
+    "pluralName": "tags"
+  },
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name"
+    }
+  }
 }

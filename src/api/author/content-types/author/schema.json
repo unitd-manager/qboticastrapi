@@ -1,7 +1,27 @@
 {
-  "name": "string",
-  "email": "email",
-  "designation": "string",
-  "bio": "richtext",
-  "avatar": "media"
+  "kind": "collectionType",
+  "collectionName": "authors",
+  "info": {
+    "displayName": "Author",
+    "singularName": "author",
+    "pluralName": "authors"
+  },
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "email"
+    },
+    "designation": {
+      "type": "string"
+    },
+    "bio": {
+      "type": "richtext"
+    },
+    "avatar": {
+      "type": "media",
+      "multiple": false
+    }
+  }
 }

@@ -11,6 +11,9 @@
       "type": "string",
       "required": true
     },
+    "acf": {
+      "type": "json"
+    },
     "slug": {
       "type": "uid",
       "targetField": "title"
@@ -24,6 +27,15 @@
     "featuredImage": {
       "type": "media",
       "multiple": false
+    },
+    "wpPostIds": {
+      "type": "string",
+      "help": "Comma-separated WordPress post IDs to display data from (e.g., 40,81,101)"
+    },
+    "displayWpData": {
+      "type": "boolean",
+      "default": false,
+      "help": "Enable to fetch and display WordPress post data"
     }
   }
 }

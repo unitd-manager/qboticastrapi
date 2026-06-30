@@ -1,6 +1,23 @@
 {
-  "name": "string",
-  "email": "email",
-  "phone": "string",
-  "message": "richtext"
+  "kind": "collectionType",
+  "collectionName": "leads",
+  "info": {
+    "displayName": "Lead",
+    "singularName": "lead",
+    "pluralName": "leads"
+  },
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "email"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "message": {
+      "type": "richtext"
+    }
+  }
 }

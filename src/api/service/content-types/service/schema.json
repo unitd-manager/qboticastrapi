@@ -1,9 +1,37 @@
 {
-  "title": "string",
-  "slug": "uid",
-  "shortDescription": "text",
-  "content": "richtext",
-  "banner": "media",
-  "icon": "media",
-  "seo": "component"
+  "kind": "collectionType",
+  "collectionName": "services",
+  "info": {
+    "displayName": "Service",
+    "singularName": "service",
+    "pluralName": "services"
+  },
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title"
+    },
+    "shortDescription": {
+      "type": "text"
+    },
+    "content": {
+      "type": "richtext"
+    },
+    "banner": {
+      "type": "media",
+      "multiple": false
+    },
+    "icon": {
+      "type": "media",
+      "multiple": false
+    },
+    "seo": {
+      "type": "component",
+      "component": "shared.seo",
+      "repeatable": false
+    }
+  }
 }

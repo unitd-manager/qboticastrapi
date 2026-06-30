@@ -11,6 +11,12 @@ const config: Core.Config.Middlewares = [
   'strapi::session',
   'strapi::favicon',
   'strapi::public',
+  {
+    name: 'global::optimize-page-admin-list',
+  },
+  {
+    name: 'global::qbo-posts-router',
+  },
 ];
 
 export default config;

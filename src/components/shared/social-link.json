@@ -1,4 +1,14 @@
-{
-  "platform": "string",
-  "url": "string"
+﻿{
+  "collectionName": "components_shared_social_links",
+  "info": {
+    "displayName": "Social Link"
+  },
+  "attributes": {
+    "platform": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    }
+  }
 }

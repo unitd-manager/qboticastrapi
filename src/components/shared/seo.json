@@ -1,8 +1,26 @@
-{
-  "metaTitle": "string",
-  "metaDescription": "text",
-  "canonicalUrl": "string",
-  "keywords": "string",
-  "ogImage": "media",
-  "noIndex": "boolean"
+﻿{
+  "collectionName": "components_shared_seos",
+  "info": {
+    "displayName": "SEO"
+  },
+  "attributes": {
+    "metaTitle": {
+      "type": "string"
+    },
+    "metaDescription": {
+      "type": "text"
+    },
+    "canonicalUrl": {
+      "type": "string"
+    },
+    "keywords": {
+      "type": "string"
+    },
+    "ogImage": {
+      "type": "media"
+    },
+    "noIndex": {
+      "type": "boolean"
+    }
+  }
 }

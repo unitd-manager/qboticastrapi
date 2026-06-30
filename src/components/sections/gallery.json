@@ -1,4 +1,14 @@
-{
-  "title": "string",
-  "images": "media"
-}
+﻿{
+  "collectionName": "components_sections_galleries",
+  "info": {
+    "displayName": "Gallery"
+  },
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "images": {
+      "type": "media"
+    }
+  }
+} 

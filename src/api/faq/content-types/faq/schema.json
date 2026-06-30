@@ -1,4 +1,17 @@
 {
-  "question": "string",
-  "answer": "richtext"
+  "kind": "collectionType",
+  "collectionName": "faqs",
+  "info": {
+    "displayName": "Faq",
+    "singularName": "faq",
+    "pluralName": "faqs"
+  },
+  "attributes": {
+    "question": {
+      "type": "string"
+    },
+    "answer": {
+      "type": "richtext"
+    }
+  }
 }
