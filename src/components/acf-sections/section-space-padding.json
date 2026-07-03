@@ -8,7 +8,9 @@
       "type": "boolean"
     },
     "padding_position": {
-      "type": "json"
+      "type": "component",
+      "repeatable": false,
+      "component": "acf-shared.section-space-padding-position"
     },
     "desktop_padding": {
       "type": "component",

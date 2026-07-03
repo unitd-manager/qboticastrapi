@@ -16,6 +16,12 @@
     "keywords": {
       "type": "string"
     },
+    "seoScore": {
+      "type": "string"
+    },
+    "contentAiScore": {
+      "type": "string"
+    },
     "ogImage": {
       "type": "media"
     },

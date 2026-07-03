@@ -79,6 +79,94 @@ const updateGuid = async (strapi: Core.Strapi, id: number, slug: string) => {
     .update({ guid });
 };
 
+type QboPostRecord = Record<string, unknown> & {
+  ID?: number;
+};
+
+const parseId = (value: unknown) => {
+  const id = Number(value);
+  return Number.isFinite(id) ? id : null;
+};
+
+const enrichPostsWithCategoryAndLayout = async (
+  strapi: Core.Strapi,
+  posts: QboPostRecord[]
+): Promise<QboPostRecord[]> => {
+  const postIds = posts
+    .map((post) => parseId(post.ID))
+    .filter((id): id is number => id !== null);
+
+  if (postIds.length === 0) {
+    return posts;
+  }
+
+  const categoryRows = await strapi.db.connection('qbo_term_relationships as tr')
+    .join('qbo_term_taxonomy as tt', 'tt.term_taxonomy_id', 'tr.term_taxonomy_id')
+    .join('qbo_terms as t', 't.term_id', 'tt.term_id')
+    .whereIn('tr.object_id', postIds)
+    .andWhere('tt.taxonomy', 'category')
+    .select('tr.object_id as postId', 't.name as categoryName')
+    .orderBy('t.name', 'asc');
+
+  const layoutRows = await strapi.db.connection('qbo_postmeta')
+    .whereIn('post_id', postIds)
+    .whereRaw("meta_key REGEXP '^layouts_[0-9]+_layout_type$'")
+    .whereNotNull('meta_value')
+    .where('meta_value', '<>', '')
+    .select('post_id as postId', 'meta_value as layoutType')
+    .orderBy('meta_key', 'asc');
+
+  const categoriesByPost = new Map<number, string[]>();
+  for (const row of categoryRows) {
+    const postId = parseId(row.postId);
+    const categoryName = typeof row.categoryName === 'string' ? row.categoryName.trim() : '';
+    if (postId === null || !categoryName) {
+      continue;
+    }
+
+    const current = categoriesByPost.get(postId) ?? [];
+    if (!current.includes(categoryName)) {
+      current.push(categoryName);
+      categoriesByPost.set(postId, current);
+    }
+  }
+
+  const layoutsByPost = new Map<number, string[]>();
+  for (const row of layoutRows) {
+    const postId = parseId(row.postId);
+    const layoutType = typeof row.layoutType === 'string' ? row.layoutType.trim() : '';
+    if (postId === null || !layoutType) {
+      continue;
+    }
+
+    const current = layoutsByPost.get(postId) ?? [];
+    if (!current.includes(layoutType)) {
+      current.push(layoutType);
+      layoutsByPost.set(postId, current);
+    }
+  }
+
+  return posts.map((post) => {
+    const postId = parseId(post.ID);
+    if (postId === null) {
+      return {
+        ...post,
+        categories: [],
+        layout: null,
+      };
+    }
+
+    const categories = categoriesByPost.get(postId) ?? [];
+    const layouts = layoutsByPost.get(postId) ?? [];
+
+    return {
+      ...post,
+      categories,
+      layout: layouts.length > 0 ? layouts.join(', ') : null,
+    };
+  });
+};
+
 export default (config: any, { strapi }: { strapi: Core.Strapi }) => {
   return async (ctx: any, next: any) => {
     const { method, path } = ctx.request;
@@ -145,10 +233,11 @@ export default (config: any, { strapi }: { strapi: Core.Strapi }) => {
             .limit(pageSizeNum)
             .offset(offset)
             .orderBy('post_date', 'desc');
+          const enrichedPosts = await enrichPostsWithCategoryAndLayout(strapi, posts);
           const totalCount = Number(total?.count ?? 0);
 
           ctx.body = {
-            data: posts,
+            data: enrichedPosts,
             meta: {
               pagination: {
                 page: pageNum,
@@ -247,7 +336,8 @@ export default (config: any, { strapi }: { strapi: Core.Strapi }) => {
             return;
           }
 
-          ctx.body = { data: post };
+          const [enrichedPost] = await enrichPostsWithCategoryAndLayout(strapi, post ? [post] : []);
+          ctx.body = { data: enrichedPost ?? post };
           return;
         } catch (error: any) {
           ctx.status = 500;

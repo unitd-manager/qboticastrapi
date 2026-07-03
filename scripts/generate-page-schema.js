@@ -28,7 +28,12 @@ function createDynamicZone(components, options = {}) {
 }
 
 function createSectionAttributes() {
-  return {};
+  return {
+    acf: {
+      type: 'json',
+      pluginOptions: HIDDEN_PLUGIN_OPTIONS,
+    },
+  };
 }
 
 function buildPageSchema() {
@@ -52,6 +57,12 @@ function buildPageSchema() {
         type: 'uid',
         targetField: 'title',
         pluginOptions: HIDDEN_PLUGIN_OPTIONS,
+      },
+
+      seo: {
+        type: 'component',
+        repeatable: false,
+        component: 'shared.seo',
       },
 
       pageType: {

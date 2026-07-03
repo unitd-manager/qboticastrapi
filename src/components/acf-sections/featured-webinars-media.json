@@ -4,6 +4,11 @@
     "displayName": "Featured Webinars Media"
   },
   "attributes": {
+    "section_space_padding": {
+      "type": "component",
+      "repeatable": false,
+      "component": "acf-sections.section-space-padding"
+    },
     "media_cards": {
       "type": "component",
       "repeatable": true,

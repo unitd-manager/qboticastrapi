@@ -4,6 +4,11 @@
     "displayName": "Latest Post"
   },
   "attributes": {
+    "section_space_padding": {
+      "type": "component",
+      "repeatable": false,
+      "component": "acf-sections.section-space-padding"
+    },
     "display_type": {
       "type": "enumeration",
       "enum": [

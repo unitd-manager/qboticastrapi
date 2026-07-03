@@ -18,15 +18,29 @@
       "type": "uid",
       "targetField": "title"
     },
+    "seo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.seo"
+    },
     "excerpt": {
       "type": "richtext"
     },
     "content": {
       "type": "richtext"
     },
+    "layout": {
+      "type": "text"
+    },
     "featuredImage": {
       "type": "media",
       "multiple": false
+    },
+    "categories": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::category.category",
+      "inversedBy": "posts"
     },
     "wpPostIds": {
       "type": "string",

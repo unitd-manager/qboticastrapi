@@ -14,6 +14,8 @@ interface WordPressPost {
   post_name: string;
   post_type: string;
   comment_count: string;
+  categories?: string[];
+  layout?: string | null;
 }
 
 interface WordPressPostsTableProps {
@@ -120,7 +122,7 @@ export const WordPressPostsTable: React.FC<WordPressPostsTableProps> = ({
       <Typography variant="beta" as="h3" marginBottom={3}>
         WordPress Posts Data
       </Typography>
-      <Table colCount={6} rowCount={posts.length + 1}>
+      <Table colCount={8} rowCount={posts.length + 1}>
         <Thead>
           <Tr>
             <Th>
@@ -137,6 +139,12 @@ export const WordPressPostsTable: React.FC<WordPressPostsTableProps> = ({
             </Th>
             <Th>
               <Typography variant="sigma">Date</Typography>
+            </Th>
+            <Th>
+              <Typography variant="sigma">Category</Typography>
+            </Th>
+            <Th>
+              <Typography variant="sigma">Layout</Typography>
             </Th>
             <Th>
               <Typography variant="sigma">Comments</Typography>
@@ -166,6 +174,16 @@ export const WordPressPostsTable: React.FC<WordPressPostsTableProps> = ({
               </Td>
               <Td>
                 <Typography>{new Date(post.post_date).toLocaleDateString()}</Typography>
+              </Td>
+              <Td>
+                <Typography>
+                  {Array.isArray(post.categories) && post.categories.length > 0
+                    ? post.categories.join(', ')
+                    : '-'}
+                </Typography>
+              </Td>
+              <Td>
+                <Typography>{post.layout || '-'}</Typography>
               </Td>
               <Td>
                 <Typography>{post.comment_count}</Typography>

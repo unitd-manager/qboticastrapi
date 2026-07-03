@@ -126,6 +126,25 @@ function firstMeaningful(...values) {
   return values.find(isMeaningfulValue);
 }
 
+function normalizePostCountFieldValue(fieldName, numericValue) {
+  if (!Number.isFinite(numericValue)) {
+    return numericValue;
+  }
+
+  const normalizedFieldName = String(fieldName || '').toLowerCase();
+  const shouldClamp =
+    normalizedFieldName === 'post_per_page' ||
+    normalizedFieldName === 'posts_limit' ||
+    normalizedFieldName === 'post_count' ||
+    normalizedFieldName === 'related_post_count';
+
+  if (!shouldClamp) {
+    return numericValue;
+  }
+
+  return Math.max(1, Math.min(5, numericValue));
+}
+
 function sanitizePlainText(value) {
   if (!isMeaningfulValue(value)) {
     return undefined;
@@ -364,7 +383,7 @@ function buildRepeaterItemSources(source, fieldName) {
     }
   }
 
-  const matcher = new RegExp(`^${escapeRegex(fieldName)}_(\\d+)_(.+)$`);
+  const matcher = new RegExp(`^${escapeRegex(fieldName)}_+(\\d+)_(.+)$`);
   const items = new Map();
 
   for (const [key, value] of Object.entries(source || {})) {
@@ -383,6 +402,51 @@ function buildRepeaterItemSources(source, fieldName) {
   return [...items.entries()]
     .sort(([left], [right]) => left - right)
     .map(([, item]) => item);
+}
+
+function buildSectionSpacePaddingField() {
+  return {
+    name: 'section_space_padding',
+    type: 'group',
+    sub_fields: [
+      {
+        name: 'padding_options',
+        type: 'true_false',
+      },
+      {
+        name: 'padding_position',
+        type: 'checkbox',
+      },
+      {
+        name: 'desktop_padding',
+        type: 'group',
+        sub_fields: [
+          {
+            name: 'padding_top_desktop',
+            type: 'range',
+          },
+          {
+            name: 'padding_bottom_desktop',
+            type: 'range',
+          },
+        ],
+      },
+      {
+        name: 'mobile_padding',
+        type: 'group',
+        sub_fields: [
+          {
+            name: 'padding_top_mobile',
+            type: 'range',
+          },
+          {
+            name: 'padding_bottom_mobile',
+            type: 'range',
+          },
+        ],
+      },
+    ],
+  };
 }
 
 function buildMenuItem(value) {
@@ -440,9 +504,26 @@ function buildMenuItem(value) {
 }
 
 function getMediaReference(entry) {
-  return entry?.id || entry?.documentId || entry || null;
-}
+  if (!entry) {
+    return null;
+  }
 
+  return {
+    id: entry.id,
+    documentId: entry.documentId,
+    name: entry.name,
+    alternativeText:
+      entry.alternativeText ||
+      entry.name ||
+      '',
+    caption: entry.caption || '',
+    mime: entry.mime,
+    width: entry.width,
+    height: entry.height,
+    url: entry.url,
+    formats: entry.formats || null,
+  };
+}
 async function resolveSingleMediaValue(value, tools = {}) {
   if (!isMeaningfulValue(value)) {
     return undefined;
@@ -580,11 +661,38 @@ async function mapField(field, source, tools, contextParts) {
   }
 
   if (type === 'number') {
-    return normalizeNumber(value, false);
+    const normalizedNumber = normalizeNumber(value, false);
+    return normalizePostCountFieldValue(field?.name, normalizedNumber);
   }
 
   if (type === 'range') {
-    return normalizeNumber(value, String(field?.step || '').includes('.'));
+    const normalizedRange = normalizeNumber(value, String(field?.step || '').includes('.'));
+    return normalizePostCountFieldValue(field?.name, normalizedRange);
+  }
+
+  if (type === 'post_object') {
+    const normalized = normalizeSerializedValue(value);
+
+    if (Array.isArray(normalized)) {
+      if (normalized.length === 0) {
+        return undefined;
+      }
+
+      const first = normalized[0];
+      if (isPlainObject(first)) {
+        const firstId = firstMeaningful(first.ID, first.id, first.post_name, first.title);
+        return isMeaningfulValue(firstId) ? String(firstId) : undefined;
+      }
+
+      return String(first);
+    }
+
+    if (isPlainObject(normalized)) {
+      const objectId = firstMeaningful(normalized.ID, normalized.id, normalized.post_name, normalized.title);
+      return isMeaningfulValue(objectId) ? String(objectId) : undefined;
+    }
+
+    return isMeaningfulValue(normalized) ? String(normalized) : undefined;
   }
 
   if (type === 'true_false') {
@@ -609,11 +717,29 @@ async function mapField(field, source, tools, contextParts) {
 
   if (type === 'checkbox') {
     const normalizedValue = normalizeSerializedValue(value);
+    if (field?.name === 'padding_position') {
+      const selectedValues = Array.isArray(normalizedValue)
+        ? normalizedValue
+        : isMeaningfulValue(normalizedValue)
+          ? [normalizedValue]
+          : [];
+
+      return {
+        top: selectedValues.includes('top'),
+        bottom: selectedValues.includes('bottom'),
+      };
+    }
+
     return Array.isArray(normalizedValue) || isPlainObject(normalizedValue) ? normalizedValue : [normalizedValue];
   }
 
   if (['select', 'radio', 'button_group'].includes(type)) {
-    return normalizeSerializedValue(value);
+    const normalized = normalizeSerializedValue(value);
+    if (Array.isArray(normalized) && normalized.length === 1) {
+      return normalized[0];
+    }
+
+    return normalized;
   }
 
   return normalizeSerializedValue(value);
@@ -785,6 +911,17 @@ async function buildPageBuilder(acf, tools = {}, options = {}) {
 
     if (!isMeaningfulValue(component)) {
       continue;
+    }
+
+    const sectionSpacePadding = await mapField(
+      buildSectionSpacePaddingField(),
+      source,
+      tools,
+      [slugify(layout.type), 'section-space-padding']
+    );
+
+    if (isMeaningfulValue(sectionSpacePadding) && !isMeaningfulValue(component.section_space_padding)) {
+      component.section_space_padding = sectionSpacePadding;
     }
 
     pageBuilder.push({

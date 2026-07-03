@@ -25,6 +25,82 @@ const orderByIds = (query: any, postIds: number[]) => {
   return query.orderByRaw(`FIELD(ID, ${placeholders})`, postIds);
 };
 
+const enrichPostsWithCategoryAndLayout = async (strapi: any, posts: any[]) => {
+  const postIds = posts
+    .map((post) => Number(post?.ID))
+    .filter((id) => Number.isFinite(id));
+
+  if (postIds.length === 0) {
+    return posts;
+  }
+
+  const categoryRows = await strapi.db.connection('qbo_term_relationships as tr')
+    .join('qbo_term_taxonomy as tt', 'tt.term_taxonomy_id', 'tr.term_taxonomy_id')
+    .join('qbo_terms as t', 't.term_id', 'tt.term_id')
+    .whereIn('tr.object_id', postIds)
+    .andWhere('tt.taxonomy', 'category')
+    .select('tr.object_id as postId', 't.name as categoryName')
+    .orderBy('t.name', 'asc');
+
+  const layoutRows = await strapi.db.connection('qbo_postmeta')
+    .whereIn('post_id', postIds)
+    .whereRaw("meta_key REGEXP '^layouts_[0-9]+_layout_type$'")
+    .whereNotNull('meta_value')
+    .where('meta_value', '<>', '')
+    .select('post_id as postId', 'meta_value as layoutType')
+    .orderBy('meta_key', 'asc');
+
+  const categoriesByPost = new Map<number, string[]>();
+  for (const row of categoryRows) {
+    const postId = Number(row.postId);
+    const categoryName = typeof row.categoryName === 'string' ? row.categoryName.trim() : '';
+
+    if (!Number.isFinite(postId) || !categoryName) {
+      continue;
+    }
+
+    const current = categoriesByPost.get(postId) ?? [];
+    if (!current.includes(categoryName)) {
+      current.push(categoryName);
+      categoriesByPost.set(postId, current);
+    }
+  }
+
+  const layoutsByPost = new Map<number, string[]>();
+  for (const row of layoutRows) {
+    const postId = Number(row.postId);
+    const layoutType = typeof row.layoutType === 'string' ? row.layoutType.trim() : '';
+
+    if (!Number.isFinite(postId) || !layoutType) {
+      continue;
+    }
+
+    const current = layoutsByPost.get(postId) ?? [];
+    if (!current.includes(layoutType)) {
+      current.push(layoutType);
+      layoutsByPost.set(postId, current);
+    }
+  }
+
+  return posts.map((post) => {
+    const postId = Number(post?.ID);
+
+    if (!Number.isFinite(postId)) {
+      return {
+        ...post,
+        categories: [],
+        layout: null,
+      };
+    }
+
+    return {
+      ...post,
+      categories: categoriesByPost.get(postId) ?? [],
+      layout: (layoutsByPost.get(postId) ?? []).join(', ') || null,
+    };
+  });
+};
+
 export default factories.createCoreService('api::post.post', ({ strapi }) => ({
   async getWordPressPosts(filters: any = {}) {
     try {
@@ -79,6 +155,7 @@ export default factories.createCoreService('api::post.post', ({ strapi }) => ({
         : postsQuery.orderBy('post_date', 'desc');
 
       const posts = await postsQuery;
+      const enrichedPosts = await enrichPostsWithCategoryAndLayout(strapi, posts);
 
       const countQuery = strapi.db.connection('qbo_posts');
       if (postIds && postIds.length > 0) {
@@ -90,7 +167,7 @@ export default factories.createCoreService('api::post.post', ({ strapi }) => ({
       const total = await countQuery.count('ID as count').first();
 
       return {
-        posts,
+        posts: enrichedPosts,
         total: toNumber(total?.count, 0),
         pagination: {
           limit: normalizedLimit,
@@ -111,7 +188,13 @@ export default factories.createCoreService('api::post.post', ({ strapi }) => ({
         .where('ID', postId)
         .first();
 
-      return post || null;
+      if (!post) {
+        return null;
+      }
+
+      const [enrichedPost] = await enrichPostsWithCategoryAndLayout(strapi, [post]);
+
+      return enrichedPost || post;
     } catch (error) {
       strapi.log.error(`Error fetching WordPress post ${postId}:`, error);
       throw error;
@@ -130,7 +213,7 @@ export default factories.createCoreService('api::post.post', ({ strapi }) => ({
 
       const posts = await orderByIds(postsQuery, postIds);
 
-      return posts;
+      return enrichPostsWithCategoryAndLayout(strapi, posts);
     } catch (error) {
       strapi.log.error('Error fetching WordPress posts by IDs:', error);
       throw error;

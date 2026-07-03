@@ -27,6 +27,8 @@ type WordPressPost = {
   post_date: string;
   post_name: string;
   comment_count: string;
+  categories?: string[];
+  layout?: string | null;
 };
 
 type PaginationMeta = {
@@ -565,7 +567,7 @@ const WordPressPostsPage = () => {
         </Box>
       ) : (
         <>
-          <Table colCount={7} rowCount={posts.length + 1}>
+          <Table colCount={9} rowCount={posts.length + 1}>
             <Thead>
               <Tr>
                 <Th>
@@ -585,6 +587,12 @@ const WordPressPostsPage = () => {
                 </Th>
                 <Th>
                   <Typography variant="sigma">Date</Typography>
+                </Th>
+                <Th>
+                  <Typography variant="sigma">Category</Typography>
+                </Th>
+                <Th>
+                  <Typography variant="sigma">Layout</Typography>
                 </Th>
                 <Th>
                   <Typography variant="sigma">Actions</Typography>
@@ -616,6 +624,16 @@ const WordPressPostsPage = () => {
                       <Typography>{formatDate(post.post_date)}</Typography>
                     </Td>
                     <Td>
+                      <Typography>
+                        {Array.isArray(post.categories) && post.categories.length > 0
+                          ? post.categories.join(', ')
+                          : '-'}
+                      </Typography>
+                    </Td>
+                    <Td>
+                      <Typography>{post.layout || '-'}</Typography>
+                    </Td>
+                    <Td>
                       <Flex gap={2}>
                         <Button
                           size="S"
@@ -637,7 +655,7 @@ const WordPressPostsPage = () => {
                 ))
               ) : (
                 <Tr>
-                  <Td colSpan={7}>
+                  <Td colSpan={9}>
                     <Box padding={4}>
                       <Typography>No WordPress posts found.</Typography>
                     </Box>

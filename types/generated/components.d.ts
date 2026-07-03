@@ -16,6 +16,10 @@ export interface AcfSectionsAboutAwardsSection extends Struct.ComponentSchema {
       true
     >;
     class_name: Schema.Attribute.String;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     title: Schema.Attribute.String;
   };
 }
@@ -30,6 +34,10 @@ export interface AcfSectionsAboutBannerLayout extends Struct.ComponentSchema {
     class_name: Schema.Attribute.String;
     description: Schema.Attribute.RichText;
     image: Schema.Attribute.Media<'images'>;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     sub_title: Schema.Attribute.Text;
     title: Schema.Attribute.String;
   };
@@ -47,6 +55,10 @@ export interface AcfSectionsAboutClientLogoSection
     client_logos: Schema.Attribute.Component<
       'acf-shared.about-client-logo-section-client-logos',
       true
+    >;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
     >;
     title: Schema.Attribute.String;
   };
@@ -66,6 +78,10 @@ export interface AcfSectionsAboutCompanyEthosSection
       true
     >;
     image: Schema.Attribute.Media<'images'>;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     title: Schema.Attribute.String;
   };
 }
@@ -82,6 +98,10 @@ export interface AcfSectionsAboutDiversitySection
     description: Schema.Attribute.RichText;
     designation: Schema.Attribute.String;
     name: Schema.Attribute.String;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     title: Schema.Attribute.String;
   };
 }
@@ -101,6 +121,10 @@ export interface AcfSectionsAboutGridLayout extends Struct.ComponentSchema {
       true
     >;
     image: Schema.Attribute.Media<'images'>;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     title: Schema.Attribute.String;
   };
 }
@@ -117,6 +141,10 @@ export interface AcfSectionsAboutLatestUpdatesSection
     items: Schema.Attribute.Component<
       'acf-shared.about-latest-updates-section-items',
       true
+    >;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
     >;
     title: Schema.Attribute.String;
   };
@@ -135,6 +163,10 @@ export interface AcfSectionsAboutLocationSection
       'acf-shared.about-location-section-locations',
       true
     >;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     title: Schema.Attribute.String;
   };
 }
@@ -150,6 +182,10 @@ export interface AcfSectionsAboutPartnerSection extends Struct.ComponentSchema {
     description: Schema.Attribute.RichText;
     image: Schema.Attribute.Media<'images'>;
     logo: Schema.Attribute.Media<'images'>;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     title: Schema.Attribute.String;
   };
 }
@@ -167,6 +203,10 @@ export interface AcfSectionsAboutStrategicHighlightsSection
     enable_animation: Schema.Attribute.Enumeration<['true', 'false']>;
     image: Schema.Attribute.Media<'images'>;
     image_position: Schema.Attribute.Enumeration<['left', 'right']>;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     sub_title: Schema.Attribute.String;
     text_alignment: Schema.Attribute.Enumeration<['left', 'center', 'right']>;
     title: Schema.Attribute.String;
@@ -183,6 +223,10 @@ export interface AcfSectionsAboutTeamSection extends Struct.ComponentSchema {
     class_name: Schema.Attribute.String;
     main_description: Schema.Attribute.RichText;
     main_title: Schema.Attribute.String;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     sub_description: Schema.Attribute.RichText;
     sub_title: Schema.Attribute.String;
     team_members: Schema.Attribute.Component<
@@ -202,6 +246,10 @@ export interface AcfSectionsAboutTrainingSection
     acf_id: Schema.Attribute.String;
     class_name: Schema.Attribute.String;
     description: Schema.Attribute.RichText;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     title: Schema.Attribute.String;
   };
 }
@@ -225,6 +273,10 @@ export interface AcfSectionsAiTechOverview extends Struct.ComponentSchema {
     image_position: Schema.Attribute.Enumeration<['left', 'right']>;
     list: Schema.Attribute.Component<'acf-shared.ai-tech-overview-list', true>;
     main_title: Schema.Attribute.Text;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     show_image: Schema.Attribute.Enumeration<['true', 'false']>;
     text_alignment: Schema.Attribute.Enumeration<['left', 'center', 'right']>;
     text_col_class: Schema.Attribute.Enumeration<
@@ -243,6 +295,10 @@ export interface AcfSectionsAutomationCtaBlock extends Struct.ComponentSchema {
     button: Schema.Attribute.Component<'shared.menu-item', false>;
     description: Schema.Attribute.Text;
     image: Schema.Attribute.Media<'images'>;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     title: Schema.Attribute.String;
   };
 }
@@ -282,6 +338,10 @@ export interface AcfSectionsBannerLayout extends Struct.ComponentSchema {
       ]
     >;
     secondary_button: Schema.Attribute.Component<'shared.menu-item', false>;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     sub_title: Schema.Attribute.String;
   };
 }
@@ -302,6 +362,10 @@ export interface AcfSectionsBenefitsGridLayout extends Struct.ComponentSchema {
       true
     >;
     main_title: Schema.Attribute.Text;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
   };
 }
 
@@ -322,6 +386,10 @@ export interface AcfSectionsBlogLayout extends Struct.ComponentSchema {
         number
       > &
       Schema.Attribute.DefaultTo<5>;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
   };
 }
 
@@ -340,6 +408,10 @@ export interface AcfSectionsCareerOpeningsSection
       true
     >;
     main_title: Schema.Attribute.String;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
   };
 }
 
@@ -379,6 +451,10 @@ export interface AcfSectionsClassicPostSlider extends Struct.ComponentSchema {
         'custom',
       ]
     >;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     show_date: Schema.Attribute.Enumeration<['yes', 'no']>;
     show_description: Schema.Attribute.Enumeration<['yes', 'no']>;
     show_feature_image: Schema.Attribute.Enumeration<['yes', 'no']>;
@@ -402,6 +478,10 @@ export interface AcfSectionsCollaborationsSection
     class_name: Schema.Attribute.String;
     description: Schema.Attribute.RichText;
     main_title: Schema.Attribute.Text;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
   };
 }
 
@@ -414,6 +494,10 @@ export interface AcfSectionsCommonCta extends Struct.ComponentSchema {
     button: Schema.Attribute.Component<'shared.menu-item', false>;
     description: Schema.Attribute.Text;
     image: Schema.Attribute.Media<'images'>;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     title: Schema.Attribute.String;
   };
 }
@@ -428,6 +512,10 @@ export interface AcfSectionsCommonHeadingSection
     cta_button: Schema.Attribute.Component<'shared.menu-item', false>;
     description: Schema.Attribute.RichText;
     display_options: Schema.Attribute.JSON;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     title: Schema.Attribute.Text;
   };
 }
@@ -454,6 +542,10 @@ export interface AcfSectionsCommonPostsSlider extends Struct.ComponentSchema {
       > &
       Schema.Attribute.DefaultTo<5>;
     post_type: Schema.Attribute.Enumeration<['post', 'page']>;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     selected_items: Schema.Attribute.JSON;
     show_date: Schema.Attribute.Enumeration<['yes', 'no']>;
     show_description: Schema.Attribute.Enumeration<['yes', 'no']>;
@@ -473,6 +565,10 @@ export interface AcfSectionsCommonSlider extends Struct.ComponentSchema {
       true
     >;
     main_title: Schema.Attribute.String;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
   };
 }
 
@@ -488,6 +584,10 @@ export interface AcfSectionsContactLocationSection
     locations: Schema.Attribute.Component<
       'acf-shared.contact-location-section-locations',
       true
+    >;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
     >;
     title: Schema.Attribute.String;
   };
@@ -508,6 +608,10 @@ export interface AcfSectionsContentHighlightBlock
     enable_animation: Schema.Attribute.Enumeration<['true', 'false']>;
     image: Schema.Attribute.Media<'images'>;
     image_position: Schema.Attribute.Enumeration<['left', 'right']>;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     show_image: Schema.Attribute.Enumeration<['true', 'false']>;
     text_alignment: Schema.Attribute.Enumeration<['left', 'center', 'right']>;
     title: Schema.Attribute.String;
@@ -529,6 +633,10 @@ export interface AcfSectionsContentImageSplitBlock
     image: Schema.Attribute.Media<'images'>;
     image_position: Schema.Attribute.Enumeration<['left', 'right']>;
     main_title: Schema.Attribute.String;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
   };
 }
 
@@ -546,6 +654,10 @@ export interface AcfSectionsContentLayout extends Struct.ComponentSchema {
     description: Schema.Attribute.RichText;
     display_options: Schema.Attribute.JSON;
     main_title: Schema.Attribute.Text;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     sub_title: Schema.Attribute.Text;
     video_iframe: Schema.Attribute.Text;
   };
@@ -564,6 +676,10 @@ export interface AcfSectionsFaqSectionBlock extends Struct.ComponentSchema {
       true
     >;
     main_title: Schema.Attribute.String;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
   };
 }
 
@@ -580,6 +696,10 @@ export interface AcfSectionsFeatureHighlightBlock
     enable_animation: Schema.Attribute.Enumeration<['true', 'false']>;
     image: Schema.Attribute.Media<'images'>;
     image_position: Schema.Attribute.Enumeration<['left', 'right']>;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     sub_title: Schema.Attribute.String;
     text_alignment: Schema.Attribute.Enumeration<['left', 'center', 'right']>;
     title: Schema.Attribute.String;
@@ -599,6 +719,10 @@ export interface AcfSectionsFeaturedWebinarsMedia
       'acf-shared.featured-webinars-media-media-cards',
       true
     >;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
   };
 }
 
@@ -613,6 +737,10 @@ export interface AcfSectionsFooterCommonCta extends Struct.ComponentSchema {
     display_options: Schema.Attribute.JSON;
     image: Schema.Attribute.Media<'images'>;
     main_title: Schema.Attribute.String;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
   };
 }
 
@@ -663,6 +791,10 @@ export interface AcfSectionsFormWithContactInfo extends Struct.ComponentSchema {
       ]
     >;
     image: Schema.Attribute.Media<'images'>;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     show_comment_form: Schema.Attribute.Enumeration<['true', 'false']>;
     social_media_link: Schema.Attribute.Component<
       'acf-shared.form-with-contact-info-social-media-link',
@@ -685,6 +817,10 @@ export interface AcfSectionsGeneralCtaSection extends Struct.ComponentSchema {
     display_options: Schema.Attribute.JSON;
     main_title: Schema.Attribute.Text;
     secondary_cta_button: Schema.Attribute.Component<'shared.menu-item', false>;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     sub_description: Schema.Attribute.Text;
   };
 }
@@ -708,6 +844,10 @@ export interface AcfSectionsGridLayout extends Struct.ComponentSchema {
     >;
     image: Schema.Attribute.Media<'images'>;
     main_title: Schema.Attribute.String;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     sub_title: Schema.Attribute.Text;
   };
 }
@@ -728,6 +868,10 @@ export interface AcfSectionsHealthcareAutomationSolutions
     enable_animation: Schema.Attribute.Enumeration<['true', 'false']>;
     image: Schema.Attribute.Media<'images'>;
     image_position: Schema.Attribute.Enumeration<['left', 'right']>;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     show_image: Schema.Attribute.Enumeration<['true', 'false']>;
     solutions: Schema.Attribute.Component<
       'acf-shared.healthcare-automation-solutions-solutions',
@@ -752,6 +896,10 @@ export interface AcfSectionsHealthcareAutomationTabs
     image: Schema.Attribute.Media<'images'>;
     main_title: Schema.Attribute.Text;
     overlay_text: Schema.Attribute.Text;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     sub_title: Schema.Attribute.Text;
     tabs: Schema.Attribute.Component<
       'acf-shared.healthcare-automation-tabs-tabs',
@@ -772,6 +920,10 @@ export interface AcfSectionsHiringProcessStepsLayout
     class_name: Schema.Attribute.String;
     description: Schema.Attribute.RichText;
     main_title: Schema.Attribute.String;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     steps: Schema.Attribute.Component<
       'acf-shared.hiring-process-steps-layout-steps',
       true
@@ -792,6 +944,10 @@ export interface AcfSectionsHomeAutomationEdge extends Struct.ComponentSchema {
     cta_button: Schema.Attribute.Component<'shared.menu-item', false>;
     description: Schema.Attribute.RichText;
     main_title: Schema.Attribute.String;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
   };
 }
 
@@ -806,6 +962,10 @@ export interface AcfSectionsHomeAwardWinner extends Struct.ComponentSchema {
       true
     >;
     main_title: Schema.Attribute.Text;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
   };
 }
 
@@ -821,6 +981,10 @@ export interface AcfSectionsHomeAwardsAndCertificates
       true
     >;
     main_title: Schema.Attribute.String;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
   };
 }
 
@@ -845,6 +1009,10 @@ export interface AcfSectionsHomeBlogPost extends Struct.ComponentSchema {
     recent_post_type: Schema.Attribute.Enumeration<
       ['newsroom', 'posts', 'usecases', 'case-studies']
     >;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     select_post: Schema.Attribute.JSON;
   };
 }
@@ -860,6 +1028,10 @@ export interface AcfSectionsHomeClientLogo extends Struct.ComponentSchema {
       true
     >;
     main_title: Schema.Attribute.String;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
   };
 }
 
@@ -873,6 +1045,10 @@ export interface AcfSectionsHomeFeaturedCaseStudy
     acf_id: Schema.Attribute.String;
     class_name: Schema.Attribute.String;
     description: Schema.Attribute.Text;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     title: Schema.Attribute.Text;
     video_iframe: Schema.Attribute.Text;
   };
@@ -892,6 +1068,10 @@ export interface AcfSectionsHomeIndustryAutomationSolutions
       true
     >;
     main_title: Schema.Attribute.String;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
   };
 }
 
@@ -909,6 +1089,10 @@ export interface AcfSectionsHomeKeyHighlights extends Struct.ComponentSchema {
       true
     >;
     main_title: Schema.Attribute.Text;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
   };
 }
 
@@ -924,6 +1108,10 @@ export interface AcfSectionsHomePartner extends Struct.ComponentSchema {
     description: Schema.Attribute.RichText;
     image: Schema.Attribute.Media<'images'>;
     main_title: Schema.Attribute.Text;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     sub_title: Schema.Attribute.Text;
     workflow_list: Schema.Attribute.Component<
       'acf-shared.home-partner-workflow-list',
@@ -944,7 +1132,11 @@ export interface AcfSectionsHomeTestimonialHighlight
     image: Schema.Attribute.Media<'images'>;
     main_title: Schema.Attribute.Text;
     order_by: Schema.Attribute.Enumeration<['ASC', 'DESC']>;
-    select_post_type: Schema.Attribute.JSON;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
+    select_post_type: Schema.Attribute.Text;
   };
 }
 
@@ -959,6 +1151,10 @@ export interface AcfSectionsHowItWorksSection extends Struct.ComponentSchema {
     class_name: Schema.Attribute.String;
     description: Schema.Attribute.RichText;
     image: Schema.Attribute.Media<'images'>;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     steps: Schema.Attribute.Component<
       'acf-shared.how-it-works-section-steps',
       true
@@ -1015,6 +1211,10 @@ export interface AcfSectionsImageFormSection extends Struct.ComponentSchema {
     >;
     image_position: Schema.Attribute.Enumeration<['left', 'right']>;
     main_title: Schema.Attribute.Text;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     sub_title: Schema.Attribute.Text;
     vertical_align: Schema.Attribute.Enumeration<['top', 'middle', 'bottom']>;
   };
@@ -1036,6 +1236,10 @@ export interface AcfSectionsImageTextFeatureBoxes
     >;
     image: Schema.Attribute.Media<'images'>;
     main_title: Schema.Attribute.Text;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
   };
 }
 
@@ -1093,6 +1297,10 @@ export interface AcfSectionsImageWithKeypoints extends Struct.ComponentSchema {
       true
     >;
     main_title: Schema.Attribute.Text;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     sub_title: Schema.Attribute.Text;
     vertical_align: Schema.Attribute.Enumeration<['top', 'middle', 'bottom']>;
   };
@@ -1123,6 +1331,10 @@ export interface AcfSectionsImpactHighlightsSection
       true
     >;
     main_title: Schema.Attribute.Text;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
   };
 }
 
@@ -1137,6 +1349,10 @@ export interface AcfSectionsIndustryAiUseCases extends Struct.ComponentSchema {
     class_name: Schema.Attribute.String;
     description: Schema.Attribute.RichText;
     main_title: Schema.Attribute.Text;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     use_cases: Schema.Attribute.Component<
       'acf-shared.industry-ai-use-cases-use-cases',
       true
@@ -1158,6 +1374,10 @@ export interface AcfSectionsIndustryHighlightBlock
       true
     >;
     main_title: Schema.Attribute.String;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
   };
 }
 
@@ -1171,6 +1391,10 @@ export interface AcfSectionsInfoCtaBox extends Struct.ComponentSchema {
     description: Schema.Attribute.RichText;
     display_options: Schema.Attribute.JSON;
     main_title: Schema.Attribute.Text;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     sub_title: Schema.Attribute.RichText;
   };
 }
@@ -1189,6 +1413,10 @@ export interface AcfSectionsKognitosBenefitsSection
     >;
     class_name: Schema.Attribute.String;
     image: Schema.Attribute.Media<'images'>;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     title: Schema.Attribute.String;
   };
 }
@@ -1200,6 +1428,10 @@ export interface AcfSectionsLatestPost extends Struct.ComponentSchema {
   };
   attributes: {
     display_type: Schema.Attribute.Enumeration<['last_post', 'select_post']>;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     select_post: Schema.Attribute.JSON;
   };
 }
@@ -1213,6 +1445,10 @@ export interface AcfSectionsLatestWebinars extends Struct.ComponentSchema {
     acf_id: Schema.Attribute.String;
     class_name: Schema.Attribute.String;
     main_title: Schema.Attribute.String;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     webinars: Schema.Attribute.Component<
       'acf-shared.latest-webinars-webinars',
       true
@@ -1233,6 +1469,10 @@ export interface AcfSectionsOurCapabilitiesSection
       'acf-shared.our-capabilities-section-our-capabilities',
       true
     >;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
   };
 }
 
@@ -1248,6 +1488,10 @@ export interface AcfSectionsPackageCardSection extends Struct.ComponentSchema {
     package_cards: Schema.Attribute.Component<
       'acf-shared.package-card-section-package-cards',
       true
+    >;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
     >;
   };
 }
@@ -1271,6 +1515,10 @@ export interface AcfSectionsPartnerHighlightSection
       'acf-shared.partner-highlight-section-partner-highlights',
       true
     >;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     sub_title: Schema.Attribute.String;
     text_alignment: Schema.Attribute.Enumeration<['left', 'center', 'right']>;
     vertical_align: Schema.Attribute.Enumeration<['top', 'middle', 'bottom']>;
@@ -1291,6 +1539,10 @@ export interface AcfSectionsPartnerShowcaseBlock
       'acf-shared.partner-showcase-block-partner-logos',
       true
     >;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
   };
 }
 
@@ -1310,6 +1562,10 @@ export interface AcfSectionsResourceGridLayout extends Struct.ComponentSchema {
       true
     >;
     main_title: Schema.Attribute.Text;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
   };
 }
 
@@ -1327,6 +1583,10 @@ export interface AcfSectionsRoundtableSessionsSections
     roundtables: Schema.Attribute.Component<
       'acf-shared.roundtable-sessions-sections-roundtables',
       true
+    >;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
     >;
   };
 }
@@ -1380,6 +1640,10 @@ export interface AcfSectionsSectionHeadingWithColumns
       ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
     >;
     heading_text: Schema.Attribute.String;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
   };
 }
 
@@ -1398,7 +1662,10 @@ export interface AcfSectionsSectionSpacePadding extends Struct.ComponentSchema {
       false
     >;
     padding_options: Schema.Attribute.Boolean;
-    padding_position: Schema.Attribute.JSON;
+    padding_position: Schema.Attribute.Component<
+      'acf-shared.section-space-padding-position',
+      false
+    >;
   };
 }
 
@@ -1418,6 +1685,10 @@ export interface AcfSectionsServiceOverview extends Struct.ComponentSchema {
       'acf-shared.service-overview-overview-list',
       true
     >;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     sub_title: Schema.Attribute.RichText;
     title: Schema.Attribute.String;
   };
@@ -1432,6 +1703,10 @@ export interface AcfSectionsSessionItemSections extends Struct.ComponentSchema {
     acf_id: Schema.Attribute.String;
     class_name: Schema.Attribute.String;
     main_title: Schema.Attribute.String;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     session_tabs: Schema.Attribute.Component<
       'acf-shared.session-item-sections-session-tabs',
       true
@@ -1449,6 +1724,10 @@ export interface AcfSectionsSideImageInfoBlocks extends Struct.ComponentSchema {
     info_list: Schema.Attribute.Component<
       'acf-shared.side-image-info-blocks-info-list',
       true
+    >;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
     >;
   };
 }
@@ -1477,6 +1756,10 @@ export interface AcfSectionsSolutionHeroBannerWithCta
     class_name: Schema.Attribute.String;
     description: Schema.Attribute.RichText;
     main_title: Schema.Attribute.Text;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     sub_description: Schema.Attribute.Text;
     tagline: Schema.Attribute.String;
   };
@@ -1502,6 +1785,10 @@ export interface AcfSectionsSolutionsFeatureBlock
     highlighted_description: Schema.Attribute.RichText;
     highlighted_subtitle: Schema.Attribute.Text;
     main_title: Schema.Attribute.Text;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
   };
 }
 
@@ -1523,6 +1810,10 @@ export interface AcfSectionsSolutionsKeyBenefits
     image: Schema.Attribute.Media<'images'>;
     image_position: Schema.Attribute.Enumeration<['left', 'right']>;
     main_title: Schema.Attribute.String;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
   };
 }
 
@@ -1533,6 +1824,10 @@ export interface AcfSectionsSpacing extends Struct.ComponentSchema {
   };
   attributes: {
     background_color: Schema.Attribute.String;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     space_height_desktop: Schema.Attribute.Integer;
     space_height_mobile: Schema.Attribute.Integer;
   };
@@ -1549,6 +1844,10 @@ export interface AcfSectionsStepCardsSection extends Struct.ComponentSchema {
     class_name: Schema.Attribute.String;
     description: Schema.Attribute.RichText;
     main_title: Schema.Attribute.Text;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     steps: Schema.Attribute.Component<
       'acf-shared.step-cards-section-steps',
       true
@@ -1567,6 +1866,10 @@ export interface AcfSectionsTeamHighlightBlock extends Struct.ComponentSchema {
     class_name: Schema.Attribute.String;
     description: Schema.Attribute.RichText;
     image: Schema.Attribute.Media<'images'>;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     title: Schema.Attribute.String;
   };
 }
@@ -1590,6 +1893,10 @@ export interface AcfSectionsTextImageCtaSection extends Struct.ComponentSchema {
       ['col-md-4', 'col-md-5', 'col-md-6']
     >;
     image_position: Schema.Attribute.Enumeration<['left', 'right']>;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     show_image: Schema.Attribute.Enumeration<['true', 'false']>;
     text_alignment: Schema.Attribute.Enumeration<['left', 'center', 'right']>;
     text_col_class: Schema.Attribute.Enumeration<
@@ -1607,6 +1914,10 @@ export interface AcfSectionsTextImageSplitBlock extends Struct.ComponentSchema {
   };
   attributes: {
     image: Schema.Attribute.Media<'images'>;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     title: Schema.Attribute.Text;
   };
 }
@@ -1619,6 +1930,10 @@ export interface AcfSectionsTextTableBlock extends Struct.ComponentSchema {
   attributes: {
     description: Schema.Attribute.RichText;
     main_title: Schema.Attribute.String;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     table: Schema.Attribute.Component<
       'acf-shared.text-table-block-table',
       false
@@ -1637,6 +1952,10 @@ export interface AcfSectionsTimelineSections extends Struct.ComponentSchema {
     cta_button: Schema.Attribute.Component<'shared.menu-item', false>;
     description: Schema.Attribute.RichText;
     main_title: Schema.Attribute.String;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     sub_title: Schema.Attribute.Text;
     timelines: Schema.Attribute.Component<
       'acf-shared.timeline-sections-timelines',
@@ -1656,6 +1975,10 @@ export interface AcfSectionsTwoColumnTextCta extends Struct.ComponentSchema {
     cta_button: Schema.Attribute.Component<'shared.menu-item', false>;
     description: Schema.Attribute.RichText;
     main_title: Schema.Attribute.Text;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
   };
 }
 
@@ -1668,6 +1991,10 @@ export interface AcfSectionsUnmappedLayout extends Struct.ComponentSchema {
     description: Schema.Attribute.RichText;
     layout_type: Schema.Attribute.String;
     raw_fields: Schema.Attribute.JSON;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     title: Schema.Attribute.Text;
   };
 }
@@ -1683,6 +2010,10 @@ export interface AcfSectionsUseCaseSingle extends Struct.ComponentSchema {
     class_name: Schema.Attribute.String;
     image: Schema.Attribute.Media<'images'>;
     main_title: Schema.Attribute.Text;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     sidebar_items: Schema.Attribute.Component<
       'acf-shared.use-case-single-sidebar-items',
       true
@@ -1704,6 +2035,10 @@ export interface AcfSectionsUseCasesGrid extends Struct.ComponentSchema {
     class_name: Schema.Attribute.String;
     description: Schema.Attribute.RichText;
     main_title: Schema.Attribute.Text;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     use_case_items: Schema.Attribute.Component<
       'acf-shared.use-cases-grid-use-case-items',
       true
@@ -1726,6 +2061,10 @@ export interface AcfSectionsUsecaseHighlightBlock
     enable_animation: Schema.Attribute.Enumeration<['true', 'false']>;
     image: Schema.Attribute.Media<'images'>;
     image_position: Schema.Attribute.Enumeration<['left', 'right']>;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     show_image: Schema.Attribute.Enumeration<['true', 'false']>;
     text_alignment: Schema.Attribute.Enumeration<['left', 'center', 'right']>;
     title: Schema.Attribute.String;
@@ -1747,6 +2086,10 @@ export interface AcfSectionsUsecaseIndustryFilter
     >;
     class_name: Schema.Attribute.String;
     main_title: Schema.Attribute.String;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
   };
 }
 
@@ -1766,6 +2109,10 @@ export interface AcfSectionsWhitePaperSingle extends Struct.ComponentSchema {
       'acf-shared.white-paper-single-related-white-papers',
       true
     >;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     sub_title: Schema.Attribute.String;
   };
 }
@@ -1784,6 +2131,10 @@ export interface AcfSectionsWhyKognitosSection extends Struct.ComponentSchema {
     class_name: Schema.Attribute.String;
     description: Schema.Attribute.Text;
     partner_logo: Schema.Attribute.Media<'images'>;
+    section_space_padding: Schema.Attribute.Component<
+      'acf-sections.section-space-padding',
+      false
+    >;
     title: Schema.Attribute.String;
   };
 }
@@ -2674,6 +3025,18 @@ export interface AcfSharedSectionSpacePaddingMobilePadding
   };
 }
 
+export interface AcfSharedSectionSpacePaddingPosition
+  extends Struct.ComponentSchema {
+  collectionName: 'components_acf_shared_section_space_padding_position';
+  info: {
+    displayName: 'Section Space (Padding) Position';
+  };
+  attributes: {
+    bottom: Schema.Attribute.Boolean;
+    top: Schema.Attribute.Boolean;
+  };
+}
+
 export interface AcfSharedServiceOverviewOverviewList
   extends Struct.ComponentSchema {
   collectionName: 'components_acf_shared_service_overview_overview_list';
@@ -2989,6 +3352,18 @@ export interface AcfSharedWhyKognitosSectionBenefits
   };
 }
 
+export interface NavigationMenuNode extends Struct.ComponentSchema {
+  collectionName: 'components_navigation_menu_nodes';
+  info: {
+    displayName: 'Menu Node';
+  };
+  attributes: {
+    children: Schema.Attribute.Component<'shared.menu-item', true>;
+    item: Schema.Attribute.Component<'shared.menu-item', false>;
+    order: Schema.Attribute.Integer;
+  };
+}
+
 export interface SectionsCta extends Struct.ComponentSchema {
   collectionName: 'components_sections_ctas';
   info: {
@@ -3249,6 +3624,7 @@ declare module '@strapi/strapi' {
       'acf-shared.roundtable-sessions-sections-roundtables-table-table-row-name-or-value': AcfSharedRoundtableSessionsSectionsRoundtablesTableTableRowNameOrValue;
       'acf-shared.section-space-padding-desktop-padding': AcfSharedSectionSpacePaddingDesktopPadding;
       'acf-shared.section-space-padding-mobile-padding': AcfSharedSectionSpacePaddingMobilePadding;
+      'acf-shared.section-space-padding-position': AcfSharedSectionSpacePaddingPosition;
       'acf-shared.service-overview-overview-list': AcfSharedServiceOverviewOverviewList;
       'acf-shared.session-item-sections-session-tabs': AcfSharedSessionItemSectionsSessionTabs;
       'acf-shared.session-item-sections-session-tabs-sessions': AcfSharedSessionItemSectionsSessionTabsSessions;
@@ -3270,6 +3646,7 @@ declare module '@strapi/strapi' {
       'acf-shared.usecase-industry-filter-categories': AcfSharedUsecaseIndustryFilterCategories;
       'acf-shared.white-paper-single-related-white-papers': AcfSharedWhitePaperSingleRelatedWhitePapers;
       'acf-shared.why-kognitos-section-benefits': AcfSharedWhyKognitosSectionBenefits;
+      'navigation.menu-node': NavigationMenuNode;
       'sections.cta': SectionsCta;
       'sections.faq-section': SectionsFaqSection;
       'sections.features': SectionsFeatures;

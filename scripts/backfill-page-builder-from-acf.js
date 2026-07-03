@@ -239,6 +239,38 @@ function isMeaningfulValue(value) {
   return true;
 }
 
+async function fetchPageAcfFromDb(conn, page) {
+  const documentId = page?.documentId || page?.id;
+  if (!documentId) {
+    return null;
+  }
+
+  const [rows] = await conn.query(
+    'SELECT acf FROM pages WHERE document_id = ? OR id = ? LIMIT 1',
+    [String(documentId), Number.isFinite(Number(documentId)) ? Number(documentId) : -1]
+  );
+
+  const raw = rows?.[0]?.acf;
+  if (!raw) {
+    return null;
+  }
+
+  if (typeof raw === 'object') {
+    return raw;
+  }
+
+  if (typeof raw !== 'string' || !raw.trim()) {
+    return null;
+  }
+
+  try {
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
 function firstMeaningful(...values) {
   return values.find(isMeaningfulValue);
 }
@@ -809,6 +841,15 @@ async function main() {
       }
 
       stats.scanned += 1;
+
+      if (!page.acf || typeof page.acf !== 'object') {
+        try {
+          const fetchedAcf = await fetchPageAcfFromDb(conn, page);
+          if (fetchedAcf && typeof fetchedAcf === 'object') {
+            page.acf = fetchedAcf;
+          }
+        } catch {}
+      }
 
       if (!page.acf || typeof page.acf !== 'object') {
         stats.skippedNoAcf += 1;

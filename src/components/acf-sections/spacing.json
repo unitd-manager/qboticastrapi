@@ -4,6 +4,11 @@
     "displayName": "Spacing (Height)"
   },
   "attributes": {
+    "section_space_padding": {
+      "type": "component",
+      "repeatable": false,
+      "component": "acf-sections.section-space-padding"
+    },
     "space_height_desktop": {
       "type": "integer"
     },

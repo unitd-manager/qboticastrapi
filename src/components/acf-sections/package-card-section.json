@@ -4,6 +4,11 @@
     "displayName": "Package Card Section"
   },
   "attributes": {
+    "section_space_padding": {
+      "type": "component",
+      "repeatable": false,
+      "component": "acf-sections.section-space-padding"
+    },
     "main_title": {
       "type": "string"
     },

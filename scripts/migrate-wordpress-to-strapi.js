@@ -21,11 +21,14 @@ const MEDIA_DOWNLOAD_RETRIES = toPositiveNumber(process.env.MEDIA_DOWNLOAD_RETRI
 const MEDIA_DOWNLOAD_DELAY_MS = toPositiveNumber(process.env.MEDIA_DOWNLOAD_DELAY_MS, 150);
 const STRAPI_REQUEST_RETRIES = toPositiveNumber(process.env.STRAPI_REQUEST_RETRIES, 2);
 const WP_DB_RETRIES = toPositiveNumber(process.env.WP_DB_RETRIES, 2);
-const MIGRATE_TYPES = parseCsv(process.env.MIGRATE_TYPES || 'categories,tags,authors,pages,posts');
+const MIGRATE_TYPES = parseCsv(process.env.MIGRATE_TYPES || 'categories,tags,authors,pages,posts,menus');
 const PAGE_POST_TYPE = process.env.WP_PAGE_TYPE || 'page';
 const BLOG_POST_TYPE = process.env.WP_BLOG_TYPE || 'post';
 const PUBLISHED_ONLY = toBoolean(process.env.WP_PUBLISHED_ONLY, true);
 const POST_LIMIT = toPositiveNumber(process.env.WP_LIMIT, 0);
+const WP_MENU_IDS = parseCsv(process.env.WP_MENU_IDS || '')
+  .map((value) => Number(value))
+  .filter((value) => Number.isFinite(value) && value > 0);
 const HAS_EXPLICIT_WP_DB_CONFIG = Boolean(
   (process.env.WP_DB_USER || '').trim() ||
     (process.env.WP_DB_NAME || '').trim() ||
@@ -56,6 +59,7 @@ const SCHEMA_BY_API = {
   category: loadSchema('category'),
   tag: loadSchema('tag'),
   author: loadSchema('author'),
+  menu: loadSchema('menu'),
 };
 
 const uploadCache = new Map();
@@ -65,6 +69,7 @@ const stats = {
   authors: { created: 0, skipped: 0 },
   pages: { created: 0, skipped: 0, updated: 0 },
   posts: { created: 0, skipped: 0 },
+  menus: { created: 0, skipped: 0 },
   media: { uploaded: 0, skipped: 0, failed: 0 },
 };
 
@@ -458,6 +463,26 @@ function extractSeo(metaRows) {
       metaByKey.rank_math_description ||
       metaByKey.seo_description ||
       metaByKey.seoDescription,
+    canonicalUrl:
+      metaByKey._yoast_wpseo_canonical ||
+      metaByKey.rank_math_canonical_url ||
+      metaByKey.rank_math_canonical ||
+      metaByKey.canonicalUrl,
+    keywords:
+      metaByKey.rank_math_focus_keyword ||
+      metaByKey.rank_math_keyword ||
+      metaByKey.rank_math_keywords ||
+      metaByKey.focus_keyword ||
+      metaByKey.seo_keywords ||
+      metaByKey.keywords,
+    seoScore:
+      metaByKey.rank_math_seo_score ||
+      metaByKey.rank_math_seoscore ||
+      metaByKey.seo_score,
+    contentAiScore:
+      metaByKey.rank_math_contentai_score ||
+      metaByKey.rank_math_contentai ||
+      metaByKey.contentAiScore,
   };
 }
 
@@ -573,7 +598,29 @@ async function updateDocument(apiName, documentId, payload, statsKey, uniqueValu
   return updated.data;
 }
 
-async function uploadFileToStrapi(fileUrl, filename) {
+function getUrlFilename(fileUrl) {
+  const normalizedUrl = normalizeRemoteUrl(fileUrl);
+  if (!normalizedUrl) {
+    return '';
+  }
+
+  try {
+    return path.basename(new URL(normalizedUrl).pathname || '');
+  } catch {
+    return path.basename(normalizedUrl);
+  }
+}
+
+function getPreferredUploadFilename(fileUrl, fallbackName) {
+  const urlFilename = getUrlFilename(fileUrl);
+  if (urlFilename) {
+    return urlFilename;
+  }
+
+  return fallbackName || 'wordpress-file';
+}
+
+async function uploadFileToStrapi(fileUrl, filename, mimeType) {
   if (!MIGRATE_MEDIA || !fileUrl) {
     stats.media.skipped += 1;
     return null;
@@ -585,14 +632,15 @@ async function uploadFileToStrapi(fileUrl, filename) {
     return null;
   }
 
-  const cacheKey = `${normalizedUrl}::${filename}`;
+  const preferredFilename = getPreferredUploadFilename(normalizedUrl, filename);
+  const cacheKey = `${normalizedUrl}::${preferredFilename}::${mimeType || ''}`;
   if (uploadCache.has(cacheKey)) {
     stats.media.skipped += 1;
     return uploadCache.get(cacheKey);
   }
 
   if (DRY_RUN) {
-    const dryRunFile = { id: null, documentId: `dry-run-upload-${slug(filename || 'file')}` };
+    const dryRunFile = { id: null, documentId: `dry-run-upload-${slug(preferredFilename || 'file')}` };
     uploadCache.set(cacheKey, dryRunFile);
     stats.media.uploaded += 1;
     console.log(`[DRY_RUN] upload media: ${normalizedUrl}`);
@@ -619,7 +667,8 @@ async function uploadFileToStrapi(fileUrl, filename) {
       });
       const form = new FormData();
       form.append('files', Buffer.from(fileResponse.data), {
-        filename: filename || path.basename(new URL(normalizedUrl).pathname) || 'wordpress-file',
+        filename: preferredFilename,
+        contentType: mimeType || fileResponse.headers['content-type'] || undefined,
       });
 
       const uploaded = await strapiRequest('post', '/api/upload', {
@@ -941,7 +990,8 @@ async function uploadAttachmentIdToStrapi(conn, attachmentId) {
 
   return uploadFileToStrapi(
     attachment.guid,
-    attachment.post_name || attachment.post_title || `attachment-${attachment.ID}`
+    attachment.post_name || attachment.post_title || `attachment-${attachment.ID}`,
+    attachment.post_mime_type
   );
 }
 
@@ -969,6 +1019,26 @@ function buildAcfPayload(wordPressPost, metaResult, extra = {}) {
   }
 
   return payload;
+}
+
+function extractLayoutTypes(acf = {}, allowedTypes = null) {
+  const layoutTypes = new Set();
+  const allowedSet = Array.isArray(allowedTypes) && allowedTypes.length > 0
+    ? new Set(allowedTypes)
+    : null;
+
+  for (const [key, value] of Object.entries(acf)) {
+    if (!/^layouts_\d+_layout_type$/.test(key)) {
+      continue;
+    }
+
+    const normalized = String(value || '').trim();
+    if (normalized && (!allowedSet || allowedSet.has(normalized))) {
+      layoutTypes.add(normalized);
+    }
+  }
+
+  return Array.from(layoutTypes);
 }
 
 function normalizeLayoutKey(key) {
@@ -1320,12 +1390,11 @@ async function buildPagePayload(wordPressPage, metaResult, conn) {
     data.content = await migrateHtmlMedia(wordPressPage.post_content || '', wordPressPage.guid || '');
   }
 
-  if (hasAttribute('page', 'seoTitle') && metaResult.seo.title) {
-    data.seoTitle = metaResult.seo.title;
-  }
-
-  if (hasAttribute('page', 'seoDescription') && metaResult.seo.description) {
-    data.seoDescription = metaResult.seo.description;
+  if (hasAttribute('page', 'seo') && (metaResult.seo.title || metaResult.seo.description)) {
+    data.seo = pickDefined({
+      metaTitle: metaResult.seo.title,
+      metaDescription: metaResult.seo.description,
+    });
   }
 
   if (hasAttribute('page', 'acf')) {
@@ -1356,6 +1425,27 @@ async function buildPostPayload(wordPressPost, metaResult, relatedEntries, featu
 
   if (hasAttribute('post', 'content')) {
     data.content = await migrateHtmlMedia(wordPressPost.post_content || '', wordPressPost.guid || '');
+  }
+
+  if (hasAttribute('post', 'layout')) {
+    const layoutTypes = extractLayoutTypes(metaResult.acf, ['faq_section_block']);
+    if (layoutTypes.length > 0) {
+      data.layout = layoutTypes.join(', ');
+    }
+  }
+
+  if (hasAttribute('post', 'seo') && (metaResult.seo.title || metaResult.seo.description)) {
+    data.seo = pickDefined({
+      metaTitle: metaResult.seo.title,
+      metaDescription: metaResult.seo.description,
+    });
+  }
+
+  if (hasAttribute('post', 'seo') && (metaResult.seo.title || metaResult.seo.description)) {
+    data.seo = pickDefined({
+      metaTitle: metaResult.seo.title,
+      metaDescription: metaResult.seo.description,
+    });
   }
 
   if (hasAttribute('post', 'acf')) {
@@ -1489,6 +1579,273 @@ async function importAuthors(conn) {
   }
 
   return map;
+}
+
+async function getNavMenus(conn) {
+  const params = [];
+  const whereClauses = [`tt.taxonomy = 'nav_menu'`];
+
+  if (WP_MENU_IDS.length > 0) {
+    whereClauses.push(`t.term_id IN (${WP_MENU_IDS.map(() => '?').join(', ')})`);
+    params.push(...WP_MENU_IDS);
+  }
+
+  const [rows] = await conn.query(
+    `
+      SELECT t.term_id, t.name, t.slug, tt.term_taxonomy_id
+      FROM ${table('terms')} AS t
+      JOIN ${table('term_taxonomy')} AS tt ON t.term_id = tt.term_id
+      WHERE ${whereClauses.join(' AND ')}
+      ORDER BY t.term_id ASC
+    `,
+    params
+  );
+
+  return rows;
+}
+
+async function getMenuItemMeta(conn, postId) {
+  const [metaRows] = await conn.query(
+    `SELECT meta_key, meta_value FROM ${table('postmeta')} WHERE post_id = ?`,
+    [postId]
+  );
+
+  const meta = Object.fromEntries(
+    metaRows.filter((row) => row.meta_key).map((row) => [row.meta_key, row.meta_value])
+  );
+
+  return {
+    type: String(meta._menu_item_type || ''),
+    object: String(meta._menu_item_object || ''),
+    objectId: meta._menu_item_object_id ? Number(meta._menu_item_object_id) : null,
+    url: normalizeRemoteUrl(meta._menu_item_url),
+    title: String(meta._menu_item_title || '').trim(),
+    parentId: meta._menu_item_menu_item_parent ? Number(meta._menu_item_menu_item_parent) : 0,
+    targetBlank: String(meta._menu_item_target || '') === '_blank',
+  };
+}
+
+function stripBaseUrl(url, baseUrl) {
+  const normalizedUrl = normalizeRemoteUrl(url);
+  const normalizedBase = normalizeRemoteUrl(baseUrl);
+  if (!normalizedUrl || !normalizedBase) {
+    return normalizedUrl;
+  }
+
+  try {
+    const base = new URL(normalizedBase);
+    const parsed = new URL(normalizedUrl);
+    if (base.host !== parsed.host) {
+      return normalizedUrl;
+    }
+
+    const path = `${parsed.pathname || ''}${parsed.search || ''}${parsed.hash || ''}`;
+    return path.startsWith('/') ? path : `/${path}`;
+  } catch {
+    return normalizedUrl;
+  }
+}
+
+async function getPostPermalinkInfo(conn, postId) {
+  const normalizedId = Number(postId);
+  if (!Number.isFinite(normalizedId) || normalizedId <= 0) {
+    return null;
+  }
+
+  const [rows] = await conn.query(
+    `
+      SELECT ID, post_name, post_type, guid
+      FROM ${table('posts')}
+      WHERE ID = ?
+    `,
+    [normalizedId]
+  );
+
+  return rows[0] || null;
+}
+
+function buildInternalMenuUrl({ postType, postSlug, guid }) {
+  const normalizedGuid = normalizeRemoteUrl(guid);
+  if (normalizedGuid && WP_BASE_URL) {
+    const stripped = stripBaseUrl(normalizedGuid, WP_BASE_URL);
+    if (stripped && stripped.startsWith('/')) {
+      return stripped;
+    }
+  }
+
+  const normalizedSlug = String(postSlug || '').trim();
+  if (!normalizedSlug) {
+    return '/';
+  }
+
+  if (String(postType || '').toLowerCase() === 'post') {
+    return `/blog/${normalizedSlug}`;
+  }
+
+  return `/${normalizedSlug}`;
+}
+
+async function importMenus(conn) {
+  if (!MIGRATE_TYPES.includes('menus')) {
+    return;
+  }
+
+  const menus = await getNavMenus(conn);
+  if (menus.length === 0) {
+    console.log('No WordPress nav menus found');
+    return;
+  }
+
+  const wpPostCache = new Map();
+
+  for (const menu of menus) {
+    const [itemRows] = await conn.query(
+      `
+        SELECT p.ID, p.post_title, p.menu_order
+        FROM ${table('posts')} AS p
+        JOIN ${table('term_relationships')} AS tr ON p.ID = tr.object_id
+        WHERE tr.term_taxonomy_id = ?
+          AND p.post_type = 'nav_menu_item'
+        ORDER BY p.menu_order ASC, p.ID ASC
+      `,
+      [menu.term_taxonomy_id]
+    );
+
+    const itemsById = new Map();
+    const itemOrder = [];
+
+    for (const row of itemRows) {
+      const meta = await getMenuItemMeta(conn, row.ID);
+      let label = String(meta.title || row.post_title || '').trim();
+      let url = meta.url;
+
+      if (meta.type === 'post_type' && meta.objectId) {
+        let wpPost = wpPostCache.get(meta.objectId);
+        if (!wpPost) {
+          wpPost = await getPostPermalinkInfo(conn, meta.objectId);
+          wpPostCache.set(meta.objectId, wpPost);
+        }
+
+        if (wpPost) {
+          if (!label) {
+            label = String(wpPost.post_title || '').trim();
+          }
+          url = buildInternalMenuUrl({
+            postType: wpPost.post_type,
+            postSlug: wpPost.post_name,
+            guid: wpPost.guid,
+          });
+        }
+      }
+
+      if (WP_BASE_URL && /^https?:\/\//i.test(url)) {
+        url = stripBaseUrl(url, WP_BASE_URL);
+      }
+
+      itemsById.set(row.ID, {
+        id: row.ID,
+        label: label || `Menu Item ${row.ID}`,
+        url: url || '/',
+        targetBlank: meta.targetBlank,
+        order: Number(row.menu_order) || 0,
+        parentId: Number(meta.parentId) || 0,
+      });
+      itemOrder.push(row.ID);
+    }
+
+    const childBuckets = new Map();
+    const rootIds = [];
+
+    function getItem(id) {
+      return itemsById.get(id) || null;
+    }
+
+    function getRootId(item) {
+      let current = item;
+      const visited = new Set();
+
+      while (current && current.parentId > 0) {
+        if (visited.has(current.id)) {
+          break;
+        }
+        visited.add(current.id);
+
+        const parent = getItem(current.parentId);
+        if (!parent) {
+          break;
+        }
+
+        current = parent;
+      }
+
+      return current?.id || item.id;
+    }
+
+    for (const id of itemOrder) {
+      const item = getItem(id);
+      if (!item) {
+        continue;
+      }
+
+      if (item.parentId <= 0) {
+        rootIds.push(item.id);
+        continue;
+      }
+
+      const rootId = getRootId(item);
+      if (rootId === item.id) {
+        rootIds.push(item.id);
+        continue;
+      }
+
+      const bucket = childBuckets.get(rootId) || [];
+      bucket.push(item);
+      childBuckets.set(rootId, bucket);
+    }
+
+    const uniqueRootIds = Array.from(new Set(rootIds));
+    const nodes = uniqueRootIds
+      .map((rootId) => itemsById.get(rootId))
+      .filter(Boolean)
+      .sort((a, b) => (a.order || 0) - (b.order || 0))
+      .map((root) => {
+        const children = (childBuckets.get(root.id) || [])
+          .slice()
+          .sort((a, b) => (a.order || 0) - (b.order || 0))
+          .map((child) => ({
+            label: child.label,
+            url: child.url,
+            targetBlank: child.targetBlank,
+          }));
+
+        return {
+          order: root.order,
+          item: {
+            label: root.label,
+            url: root.url,
+            targetBlank: root.targetBlank,
+          },
+          children,
+        };
+      });
+
+    const payload = {
+      data: pickDefined({
+        title: menu.name || `Menu ${menu.term_id}`,
+        slug: slug(menu.slug || menu.name || `menu-${menu.term_id}`),
+        wpTermId: Number(menu.term_id) || undefined,
+        items: nodes,
+      }),
+    };
+
+    await createIfMissing(
+      'menu',
+      hasAttribute('menu', 'wpTermId') ? 'wpTermId' : 'slug',
+      hasAttribute('menu', 'wpTermId') ? payload.data.wpTermId : payload.data.slug,
+      payload,
+      'menus'
+    );
+  }
 }
 
 async function importPages(conn) {
@@ -1632,6 +1989,7 @@ async function main() {
         tablePrefix: TABLE_PREFIX,
         skipExisting: SKIP_EXISTING,
         postLimit: POST_LIMIT || null,
+        wpMenuIds: WP_MENU_IDS.length > 0 ? WP_MENU_IDS : null,
       },
       null,
       2
@@ -1646,6 +2004,7 @@ async function main() {
     const categoryMap = await importCategories(conn);
     const tagMap = await importTags(conn);
     const authorMap = await importAuthors(conn);
+    await importMenus(conn);
 
     await importPages(conn);
     await importPosts(conn, categoryMap, tagMap, authorMap);

@@ -9,6 +9,9 @@ const config: Core.Config.Middlewares = [
   'strapi::query',
   'strapi::body',
   'strapi::session',
+  {
+    name: 'global::normalize-media-urls',
+  },
   'strapi::favicon',
   'strapi::public',
   {

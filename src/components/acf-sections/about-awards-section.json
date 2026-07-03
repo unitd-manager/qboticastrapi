@@ -4,6 +4,11 @@
     "displayName": "Awards Section"
   },
   "attributes": {
+    "section_space_padding": {
+      "type": "component",
+      "repeatable": false,
+      "component": "acf-sections.section-space-padding"
+    },
     "title": {
       "type": "string"
     },

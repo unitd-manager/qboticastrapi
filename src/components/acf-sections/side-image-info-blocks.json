@@ -4,6 +4,11 @@
     "displayName": "Side Image Info Blocks"
   },
   "attributes": {
+    "section_space_padding": {
+      "type": "component",
+      "repeatable": false,
+      "component": "acf-sections.section-space-padding"
+    },
     "image": {
       "type": "media",
       "multiple": false,

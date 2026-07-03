@@ -4,6 +4,11 @@
     "displayName": "Form With Contact Info"
   },
   "attributes": {
+    "section_space_padding": {
+      "type": "component",
+      "repeatable": false,
+      "component": "acf-sections.section-space-padding"
+    },
     "show_comment_form": {
       "type": "enumeration",
       "enum": [
