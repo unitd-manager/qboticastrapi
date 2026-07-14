@@ -513,6 +513,58 @@ function getMediaReference(entry) {
   return entry?.id || entry?.documentId || null;
 }
 
+function extractInvalidPayloadKeys(error) {
+  const invalidKeys = [];
+  const responseData = error?.response?.data;
+  const message = String(responseData?.error?.message || error?.message || '');
+  const detailKey = responseData?.error?.details?.key;
+
+  if (detailKey) {
+    invalidKeys.push(String(detailKey));
+  }
+
+  const messageMatches = message.match(/invalid key\s+([a-zA-Z0-9_\-]+)/gi) || [];
+  for (const match of messageMatches) {
+    const key = match.replace(/^invalid key\s+/i, '').trim();
+    if (key) {
+      invalidKeys.push(key);
+    }
+  }
+
+  return [...new Set(invalidKeys.filter(Boolean))];
+}
+
+function stripUnsupportedPayloadFields(payload, invalidKeys) {
+  const keys = [...new Set((invalidKeys || []).filter(Boolean))];
+  if (!payload || typeof payload !== 'object' || keys.length === 0) {
+    return payload;
+  }
+
+  const sanitizeValue = (value) => {
+    if (Array.isArray(value)) {
+      return value.map((item) => sanitizeValue(item));
+    }
+
+    if (!value || typeof value !== 'object') {
+      return value;
+    }
+
+    const result = {};
+    for (const [entryKey, entryValue] of Object.entries(value)) {
+      if (keys.includes(entryKey)) {
+        continue;
+      }
+
+      result[entryKey] = sanitizeValue(entryValue);
+    }
+
+    return result;
+  };
+
+  const sanitized = sanitizeValue(payload);
+  return sanitized;
+}
+
 async function createIfMissing(apiName, uniqueField, uniqueValue, payload, statsKey) {
   if (DRY_RUN) {
     stats[statsKey].created += 1;
@@ -541,17 +593,52 @@ async function createIfMissing(apiName, uniqueField, uniqueValue, payload, stats
   try {
     created = await strapiRequest('post', getCollectionPath(apiName), { data: payload });
   } catch (error) {
-    const context = {
-      apiName,
-      uniqueField,
-      uniqueValue,
-      payloadPreview: JSON.stringify(payload, null, 2).slice(0, 3000),
-    };
-    const wrappedError = new Error(
-      `Create failed for ${apiName} (${uniqueField}=${uniqueValue}): ${error.message}\nContext: ${JSON.stringify(context, null, 2)}`
-    );
-    wrappedError.cause = error;
-    throw wrappedError;
+    const invalidKeys = extractInvalidPayloadKeys(error);
+    if (invalidKeys.length > 0) {
+      const sanitizedPayload = stripUnsupportedPayloadFields(payload, invalidKeys);
+      if (sanitizedPayload && JSON.stringify(sanitizedPayload) !== JSON.stringify(payload)) {
+        console.warn(`Retrying create for ${apiName} after removing unsupported fields: ${invalidKeys.join(', ')}`);
+        try {
+          created = await strapiRequest('post', getCollectionPath(apiName), { data: sanitizedPayload });
+        } catch (retryError) {
+          const context = {
+            apiName,
+            uniqueField,
+            uniqueValue,
+            payloadPreview: JSON.stringify(sanitizedPayload, null, 2).slice(0, 3000),
+          };
+          const wrappedError = new Error(
+            `Create failed for ${apiName} (${uniqueField}=${uniqueValue}): ${retryError.message}\nContext: ${JSON.stringify(context, null, 2)}`
+          );
+          wrappedError.cause = retryError;
+          throw wrappedError;
+        }
+      } else {
+        const context = {
+          apiName,
+          uniqueField,
+          uniqueValue,
+          payloadPreview: JSON.stringify(payload, null, 2).slice(0, 3000),
+        };
+        const wrappedError = new Error(
+          `Create failed for ${apiName} (${uniqueField}=${uniqueValue}): ${error.message}\nContext: ${JSON.stringify(context, null, 2)}`
+        );
+        wrappedError.cause = error;
+        throw wrappedError;
+      }
+    } else {
+      const context = {
+        apiName,
+        uniqueField,
+        uniqueValue,
+        payloadPreview: JSON.stringify(payload, null, 2).slice(0, 3000),
+      };
+      const wrappedError = new Error(
+        `Create failed for ${apiName} (${uniqueField}=${uniqueValue}): ${error.message}\nContext: ${JSON.stringify(context, null, 2)}`
+      );
+      wrappedError.cause = error;
+      throw wrappedError;
+    }
   }
   stats[statsKey].created += 1;
   console.log(`Created ${apiName}: ${uniqueValue}`);
@@ -578,17 +665,52 @@ async function updateDocument(apiName, documentId, payload, statsKey, uniqueValu
   try {
     updated = await strapiRequest('put', `${getCollectionPath(apiName)}/${documentId}`, { data: payload });
   } catch (error) {
-    const context = {
-      apiName,
-      documentId,
-      uniqueValue,
-      payloadPreview: JSON.stringify(payload, null, 2).slice(0, 3000),
-    };
-    const wrappedError = new Error(
-      `Update failed for ${apiName} (${uniqueValue}): ${error.message}\nContext: ${JSON.stringify(context, null, 2)}`
-    );
-    wrappedError.cause = error;
-    throw wrappedError;
+    const invalidKeys = extractInvalidPayloadKeys(error);
+    if (invalidKeys.length > 0) {
+      const sanitizedPayload = stripUnsupportedPayloadFields(payload, invalidKeys);
+      if (sanitizedPayload && JSON.stringify(sanitizedPayload) !== JSON.stringify(payload)) {
+        console.warn(`Retrying update for ${apiName} after removing unsupported fields: ${invalidKeys.join(', ')}`);
+        try {
+          updated = await strapiRequest('put', `${getCollectionPath(apiName)}/${documentId}`, { data: sanitizedPayload });
+        } catch (retryError) {
+          const context = {
+            apiName,
+            documentId,
+            uniqueValue,
+            payloadPreview: JSON.stringify(sanitizedPayload, null, 2).slice(0, 3000),
+          };
+          const wrappedError = new Error(
+            `Update failed for ${apiName} (${uniqueValue}): ${retryError.message}\nContext: ${JSON.stringify(context, null, 2)}`
+          );
+          wrappedError.cause = retryError;
+          throw wrappedError;
+        }
+      } else {
+        const context = {
+          apiName,
+          documentId,
+          uniqueValue,
+          payloadPreview: JSON.stringify(payload, null, 2).slice(0, 3000),
+        };
+        const wrappedError = new Error(
+          `Update failed for ${apiName} (${uniqueValue}): ${error.message}\nContext: ${JSON.stringify(context, null, 2)}`
+        );
+        wrappedError.cause = error;
+        throw wrappedError;
+      }
+    } else {
+      const context = {
+        apiName,
+        documentId,
+        uniqueValue,
+        payloadPreview: JSON.stringify(payload, null, 2).slice(0, 3000),
+      };
+      const wrappedError = new Error(
+        `Update failed for ${apiName} (${uniqueValue}): ${error.message}\nContext: ${JSON.stringify(context, null, 2)}`
+      );
+      wrappedError.cause = error;
+      throw wrappedError;
+    }
   }
 
   if (stats[statsKey]?.updated !== undefined) {
@@ -1930,7 +2052,8 @@ async function importPosts(conn, categoryMap, tagMap, authorMap) {
       if (attachment?.guid) {
         const uploaded = await uploadFileToStrapi(
           attachment.guid,
-          attachment.post_name || attachment.post_title || `attachment-${attachment.ID}`
+          attachment.post_name || attachment.post_title || `attachment-${attachment.ID}`,
+          attachment.post_mime_type
         );
         featuredImage = uploaded;
       }
@@ -1948,6 +2071,44 @@ async function importPosts(conn, categoryMap, tagMap, authorMap) {
       },
       featuredImage
     );
+
+    // If an entry already exists, by default skip it (create-only).
+    // To enable updating fields on existing posts set env vars:
+    //   UPDATE_EXISTING_FEATURED_IMAGE=true  -> update featuredImage
+    //   UPDATE_EXISTING_CONTENT=true         -> update content
+    const existing = await getExistingByField('post', 'slug', payload.data.slug);
+    if (existing) {
+      const shouldUpdateExistingFeatured = String(process.env.UPDATE_EXISTING_FEATURED_IMAGE || '').toLowerCase() === 'true';
+      const shouldUpdateExistingContent = String(process.env.UPDATE_EXISTING_CONTENT || '').toLowerCase() === 'true';
+
+      const updateData = {};
+      if (shouldUpdateExistingFeatured && payload.data.featuredImage !== undefined) {
+        updateData.featuredImage = payload.data.featuredImage;
+      }
+
+      if (shouldUpdateExistingContent && payload.data.content !== undefined) {
+        updateData.content = payload.data.content;
+      }
+
+      if (Object.keys(updateData).length > 0) {
+        try {
+          await updateDocument(
+            'post',
+            existing.documentId || existing.id,
+            { data: updateData },
+            'posts',
+            payload.data.slug
+          );
+        } catch (err) {
+          console.warn(`Failed to update existing post ${payload.data.slug}: ${err.message || err}`);
+        }
+      } else {
+        stats.posts.skipped += 1;
+        console.log(`Skipped existing post: ${payload.data.slug}`);
+      }
+
+      continue;
+    }
 
     await createIfMissing('post', 'slug', payload.data.slug, payload, 'posts');
   }

@@ -17,6 +17,8 @@
     "migrate:list": "node scripts/migrate-home-automation-edge-list.js",
     "migrate:page-builder-groups": "node scripts/migrate-page-builder-groups.js",
     "migrate:home-page": "node scripts/migrate-home-page-only.js",
+    "migrate:home-page-seo": "node scripts/migrate-home-page-seo-only.js",
+    "migrate:pages-seo-all": "node scripts/migrate-pages-seo-all.js",
     "migrate:wordpress": "node scripts/migrate-wordpress-to-strapi.js",
     "prebuild": "npm run build:page-schema && npm run build:types",
     "predev": "npm run build:page-schema && npm run build:types",

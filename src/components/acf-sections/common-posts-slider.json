@@ -24,7 +24,7 @@
     },
     "selected_items": {
       "type": "json",
-      "description": "Select posts/pages to display. If empty, latest items of the chosen type will be shown"
+      "customField": "plugin::custom.common-posts-picker"
     },
     "post_per_page": {
       "type": "integer",

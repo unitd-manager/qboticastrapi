@@ -546,7 +546,8 @@ export interface AcfSectionsCommonPostsSlider extends Struct.ComponentSchema {
       'acf-sections.section-space-padding',
       false
     >;
-    selected_items: Schema.Attribute.JSON;
+    selected_items: Schema.Attribute.JSON &
+      Schema.Attribute.CustomField<'plugin::custom.common-posts-picker'>;
     show_date: Schema.Attribute.Enumeration<['yes', 'no']>;
     show_description: Schema.Attribute.Enumeration<['yes', 'no']>;
     show_feature_image: Schema.Attribute.Enumeration<['yes', 'no']>;
@@ -3454,11 +3455,13 @@ export interface SharedSeo extends Struct.ComponentSchema {
   };
   attributes: {
     canonicalUrl: Schema.Attribute.String;
+    contentAiScore: Schema.Attribute.String;
     keywords: Schema.Attribute.String;
     metaDescription: Schema.Attribute.Text;
     metaTitle: Schema.Attribute.String;
     noIndex: Schema.Attribute.Boolean;
     ogImage: Schema.Attribute.Media;
+    seoScore: Schema.Attribute.String;
   };
 }
 

@@ -780,6 +780,7 @@ export interface ApiPagePage extends Struct.CollectionTypeSchema {
       }> &
       Schema.Attribute.DefaultTo<'landing'>;
     publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
     slug: Schema.Attribute.UID<'title'> &
       Schema.Attribute.SetPluginOptions<{
         'content-manager': {
@@ -826,6 +827,7 @@ export interface ApiPostPost extends Struct.CollectionTypeSchema {
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::post.post'> &
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
     slug: Schema.Attribute.UID<'title'>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
